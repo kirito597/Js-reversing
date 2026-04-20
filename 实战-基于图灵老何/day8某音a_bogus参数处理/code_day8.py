@@ -1,0 +1,85 @@
+import requests
+import time
+
+headers = {
+    'accept': 'application/json, text/plain, */*',
+    'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+    'cache-control': 'no-cache',
+    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'origin': 'https://www.douyin.com',
+    'pragma': 'no-cache',
+    'priority': 'u=1, i',
+    'referer': 'https://www.douyin.com/jingxuan',
+    'sec-ch-ua': '"Not;A=Brand";v="99", "Microsoft Edge";v="139", "Chromium";v="139"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'uifid': '5a9ddafc2df5b1d5b452c3de63aa171cea81dc4215a756cefc72ee80e24fb54c6bbdba0128a47f9b7edf424e333957f81c860ecc128d456d516e24450a906acc9218a1c057b6bc2c4535a6d3c543cccc7aa9a350cc8e4bf175056eabe4433ca3e32fed83f91364b0129c6550fa73e708ec935df015efbf001a2ff7376eb285a8cb072f007f30cc874b5d1dc15bdd6c418807f5da3ec0dcadf16245f9b660ef04cf3dd539e42b6069806d70c32d5d363bf7b03b3c85120add28d835a7be3d8c10',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0',
+    'x-secsdk-csrf-token': 'DOWNGRADE',
+    'cookie': 'enter_pc_once=1; UIFID_TEMP=5a9ddafc2df5b1d5b452c3de63aa171cea81dc4215a756cefc72ee80e24fb54c6bbdba0128a47f9b7edf424e333957f81c860ecc128d456d516e24450a906acce5ab0130863c24611d7d921b17c9620453b44507542ab18acc2a3c5eac2fc02fcd48d89cda896e9a95a9e79a0dc2e519; x-web-secsdk-uid=b32e45aa-688f-4a97-a3c2-020c4689b638; douyin.com; device_web_cpu_core=16; device_web_memory_size=8; architecture=amd64; dy_swidth=1440; dy_sheight=960; stream_recommend_feed_params=%22%7B%5C%22cookie_enabled%5C%22%3Atrue%2C%5C%22screen_width%5C%22%3A1440%2C%5C%22screen_height%5C%22%3A960%2C%5C%22browser_online%5C%22%3Atrue%2C%5C%22cpu_core_num%5C%22%3A16%2C%5C%22device_memory%5C%22%3A8%2C%5C%22downlink%5C%22%3A10%2C%5C%22effective_type%5C%22%3A%5C%224g%5C%22%2C%5C%22round_trip_time%5C%22%3A50%7D%22; fpk1=U2FsdGVkX19P69x0Ow4/iYYxaWVBssE+A1VwpYn1gjEA+w5X3VDkZ016owBAgWoNZlGDgC0XIYVdT/jbM9PpBQ==; fpk2=b345ebad146dda9f9a4e55672d01662e; strategyABtestKey=%221755240274.873%22; volume_info=%7B%22isUserMute%22%3Afalse%2C%22isMute%22%3Afalse%2C%22volume%22%3A0.5%7D; passport_csrf_token=5976dd3bda81c4846352afdd725783e7; passport_csrf_token_default=5976dd3bda81c4846352afdd725783e7; xgplayer_user_id=914667100746; __security_mc_1_s_sdk_crypt_sdk=69cd3a47-4332-9429; bd_ticket_guard_client_web_domain=2; s_v_web_id=verify_mecgquiy_QhyT93NS_jdK5_4xvE_BRNE_0AOC4KU3EBkL; passport_assist_user=CkF6BN-wU6XRr76yEIpqBg1qWPU-mhMqcH01h90vSCSwPO6_YnNB5bTxL44ZiaCNV60z_a-EO4FzGsCHHqglEdbJJxpKCjwAAAAAAAAAAAAAT1ubE3ru9sXvfjhD73otuJt5jTgmVSG68lvH5E0iqr4tup4WEUaGVJ39OP-Q9nFAJ3UQt8D5DRiJr9ZUIAEiAQODsnR6; n_mh=cjgYkuWooKpE57z7LVpWNsT-66D8ZXxHpsVmQork9c8; sid_guard=1cd3b24280c83a3c7d7cf737f361fcdd%7C1755240304%7C5183999%7CTue%2C+14-Oct-2025+06%3A45%3A03+GMT; uid_tt=9aefa80f2913e54b8ec28cfe84e16c49; uid_tt_ss=9aefa80f2913e54b8ec28cfe84e16c49; sid_tt=1cd3b24280c83a3c7d7cf737f361fcdd; sessionid=1cd3b24280c83a3c7d7cf737f361fcdd; sessionid_ss=1cd3b24280c83a3c7d7cf737f361fcdd; session_tlb_tag=sttt%7C16%7CHNOyQoDIOjx9fPc382H83f_________JH36vyImUNrJ6VZVB4a80t1lNx8eIIPvWUllvKCrTh3E%3D; is_staff_user=false; sid_ucp_v1=1.0.0-KDdiYWI1MmJhZTI4NTNiYzQ0NGQ1NjI0M2VhOWVhOTA2ZDQ3MGE2NzgKIQjX8aDdl8ySBxDwrvvEBhjvMSAMMOX03qgGOAdA9AdIBBoCbHEiIDFjZDNiMjQyODBjODNhM2M3ZDdjZjczN2YzNjFmY2Rk; ssid_ucp_v1=1.0.0-KDdiYWI1MmJhZTI4NTNiYzQ0NGQ1NjI0M2VhOWVhOTA2ZDQ3MGE2NzgKIQjX8aDdl8ySBxDwrvvEBhjvMSAMMOX03qgGOAdA9AdIBBoCbHEiIDFjZDNiMjQyODBjODNhM2M3ZDdjZjczN2YzNjFmY2Rk; login_time=1755240304220; _bd_ticket_crypt_cookie=1ec47f8f89ce185a290443dba62acab3; __security_mc_1_s_sdk_sign_data_key_web_protect=c0129d17-4447-8f81; __security_mc_1_s_sdk_cert_key=35d93ff3-4988-98de; __security_server_data_status=1; stream_player_status_params=%22%7B%5C%22is_auto_play%5C%22%3A0%2C%5C%22is_full_screen%5C%22%3A0%2C%5C%22is_full_webscreen%5C%22%3A0%2C%5C%22is_mute%5C%22%3A0%2C%5C%22is_speed%5C%22%3A1%2C%5C%22is_visible%5C%22%3A0%7D%22; __ac_signature=_02B4Z6wo00f013KynHQAAIDA.xol.8NRRt9ykpjAALQ976; UIFID=5a9ddafc2df5b1d5b452c3de63aa171cea81dc4215a756cefc72ee80e24fb54c6bbdba0128a47f9b7edf424e333957f81c860ecc128d456d516e24450a906acc9218a1c057b6bc2c4535a6d3c543cccc7aa9a350cc8e4bf175056eabe4433ca3e32fed83f91364b0129c6550fa73e708ec935df015efbf001a2ff7376eb285a8cb072f007f30cc874b5d1dc15bdd6c418807f5da3ec0dcadf16245f9b660ef04cf3dd539e42b6069806d70c32d5d363bf7b03b3c85120add28d835a7be3d8c10; SelfTabRedDotControl=%5B%5D; publish_badge_show_info=%220%2C0%2C0%2C1755240308876%22; FOLLOW_LIVE_POINT_INFO=%22MS4wLjABAAAACLgbY22U4H3J4j3IteuafWmlCS85ZtYIEEKN1J5MKzCPCE32gRICSW59SZ4gmsh-%2F1755273600000%2F0%2F1755240317367%2F0%22; FOLLOW_NUMBER_YELLOW_POINT_INFO=%22MS4wLjABAAAACLgbY22U4H3J4j3IteuafWmlCS85ZtYIEEKN1J5MKzCPCE32gRICSW59SZ4gmsh-%2F1755273600000%2F0%2F0%2F1755242345342%22; download_guide=%222%2F20250815%2F0%22; WallpaperGuide=%7B%22showTime%22%3A1755241209850%2C%22closeTime%22%3A0%2C%22showCount%22%3A1%2C%22cursor1%22%3A16%2C%22cursor2%22%3A4%7D; odin_tt=71c000b4e8d630747022b696fcc0db60fec9ab40f31b86c4af5050b9124b7d50ec1b34c2077a40215756899e9d07d8495df03e2e937cdfc2aa4a9b3b97a136e9; IsDouyinActive=true; home_can_add_dy_2_desktop=%220%22; bd_ticket_guard_client_data=eyJiZC10aWNrZXQtZ3VhcmQtdmVyc2lvbiI6MiwiYmQtdGlja2V0LWd1YXJkLWl0ZXJhdGlvbi12ZXJzaW9uIjoxLCJiZC10aWNrZXQtZ3VhcmQtcmVlLXB1YmxpYy1rZXkiOiJCTnRCQWVxaFZxQzU5ekFweCtxVTNjSDBCRWZKa24zZHEzVVVOY01CMm9EUmlyQ3ZSYmJ6VzFELzVHSWFta2puVzRsQVlDdlpaeUZEcWlxT1F3eThpQnM9IiwiYmQtdGlja2V0LWd1YXJkLXdlYi12ZXJzaW9uIjoyfQ%3D%3D; ttwid=1%7C_ATAcGUO84aykpAk_vEaRm8-VRpmIfIu0KdeHWwnUOA%7C1755246091%7Cab2d0a44de8aa3c0831d5e6ff0c6beffb1054eeef2c0236f44e3e83325a1df32; biz_trace_id=aafe1f2b; sdk_source_info=7e276470716a68645a606960273f276364697660272927676c715a6d6069756077273f276364697660272927666d776a68605a607d71606b766c6a6b5a7666776c7571273f275e58272927666a6b766a69605a696c6061273f27636469766027292762696a6764695a7364776c6467696076273f275e582729277672715a646971273f2763646976602729277f6b5a666475273f2763646976602729276d6a6e5a6b6a716c273f2763646976602729276c6b6f5a7f6367273f27636469766027292771273f27363031343c3533313730303234272927676c715a75776a716a666a69273f2763646976602778; bit_env=fdMzK73mvhC1xTrGs6_t-jIt7WjuHBmg1-EHFvKtNvMaTm8BLM4K-EIAiOrkmHt-eHIIHcbR9759wjw_TtZ5PLHC4G6nXUTv_RoOg2E0t5-p-uQTsBL7pYKfWapwBt_hig-ssv3_uyil3qBubAz1qvUdfOePz_i6DnhoyGFErrWM_Y9f9CrApVzxHiFN5TXuoZ4NVIKWkJr9hwLE7yWqzsMZiqy31mbh3eFSBBf3x1WFpKgkSMVCRQqE-XAF_hh88FcA_DCpQDyrqlBPKpZ0djJ03V3k_hBdTyIyepTe9VmidIL4mSdn2F1xc8fKxazE8VtlqxEzsvQH70IR7MtU1UcI_uWYFhYw6TeWcPlWK1VpQfR1ZyDBm2RJ2PH7p9KRcH9UcLW8ZtzhORF1cPOzzVxPabEB-zYptxFrIM5SHOmogXsisMYB5Qk5g9Xr_UUABQZlSkfUM39rZCKS77M8KIKpF8PBnEyYAZ0yQIbhgQZG3QDjHlRMeuDB7bXMo5F6RgHzBW-9KP1ZdPw3RKwAMjXkW38s5QbpKw3pbrVtqr8%3D; gulu_source_res=eyJwX2luIjoiNzdkYmFjNjc3M2U3MmI2ZDE4MGUwODgwZTI1NjYyZWU0YTIzMGMxYjY3MWYzZGQ1YTA2NTQ2MmZiMjY1NzFlMyJ9; passport_auth_mix_state=gmpk8uajbzdhg2yiujmgggfh0i5duvsx',
+}
+
+params = {
+    'device_platform': 'webapp',
+    'aid': '6383',
+    'channel': 'channel_pc_web',
+    'module_id': '3003101',
+    'count': '20',
+    'filterGids': '',
+    'presented_ids': '',
+    'refresh_index': '1',
+    'refer_id': '',
+    'refer_type': '10',
+    'awemePcRecRawData': '{"is_xigua_user":0,"danmaku_switch_status":0,"is_client":false}',
+    'Seo-Flag': '0',
+    'install_time': str(int(time.time())),
+    'tag_id': '',
+    'use_lite_type': '2',
+    'pre_log_id': '',
+    'pre_item_ids': '7538148453658987810,7517292239443184906,7532451457203883318,7536878834671439150,7531403010027572532,7525853606244814139,7536850324519210282,7508391452884438322,7523955882284174628,7535328998268636456',
+    'pre_item_from': 'sort',
+    'xigua_user': '0',
+    'pc_client_type': '1',
+    'pc_libra_divert': 'Windows',
+    'update_version_code': '170400',
+    'support_h265': '0',
+    'support_dash': '0',
+    'version_code': '170400',
+    'version_name': '17.4.0',
+    'cookie_enabled': 'true',
+    'screen_width': '1440',
+    'screen_height': '960',
+    'browser_language': 'zh-CN',
+    'browser_platform': 'Win32',
+    'browser_name': 'Edge',
+    'browser_version': '139.0.0.0',
+    'browser_online': 'true',
+    'engine_name': 'Blink',
+    'engine_version': '139.0.0.0',
+    'os_name': 'Windows',
+    'os_version': '10',
+    'cpu_core_num': '16',
+    'device_memory': '8',
+    'platform': 'PC',
+    'downlink': '10',
+    'effective_type': '4g',
+    'round_trip_time': '50',
+    'webid': '7538699503345501705',
+    'uifid': '5a9ddafc2df5b1d5b452c3de63aa171cea81dc4215a756cefc72ee80e24fb54c6bbdba0128a47f9b7edf424e333957f81c860ecc128d456d516e24450a906acc9218a1c057b6bc2c4535a6d3c543cccc7aa9a350cc8e4bf175056eabe4433ca3e32fed83f91364b0129c6550fa73e708ec935df015efbf001a2ff7376eb285a8cb072f007f30cc874b5d1dc15bdd6c418807f5da3ec0dcadf16245f9b660ef04cf3dd539e42b6069806d70c32d5d363bf7b03b3c85120add28d835a7be3d8c10',
+    'msToken': 'OPwC8dO-mQLDSRIHahzWOUtKlD7eMudNmSR2D3AmFeNA4hd_AgS5erW2hTiw1PdQZJ1-9uJKBrHSVA6lZ1W1FuZiebVtehToRNvcOwkY3J5AKDiOEuxCEpUQ4hWOyyWswTdSgKeBZ_6614DKd1Xd9UXYCoNntWwb8OMm1zi6fHojt3XhiVsJug==',
+    'a_bogus': 'xy45gFtEm2WbCdMtYCa2HjdUPl6ANsuyQ1TobKHTHPuxOw0YTRPehqNjcxLfszfu7SBsh91HoVCUYxdOzU1PgCHpFmpfukzb3G/5986LMqNXGtsBEHWge0szowsF8b4L-5nWi1RRUs0r1D5lIHILAdVa95zq-mbpWNMIpMY9JDS0pP6TIxA1C-hC',
+    'verifyFp': 'verify_mecgquiy_QhyT93NS_jdK5_4xvE_BRNE_0AOC4KU3EBkL',
+    'fp': 'verify_mecgquiy_QhyT93NS_jdK5_4xvE_BRNE_0AOC4KU3EBkL',
+}
+
+data = {
+    'encoded_pre_item_ids': 'MDUEDNlD15Mse2Qm4qvTNwQTF36FtSjdEtpBr00rZrQ22RxyTAQQyOkVZ4k/FxJHLPm2GcJDpA==,MDUEDEiVuawSi9kFIXP64gQTx4VVxHM5BwgneECA/OPz4upViwQQaaWXc+B0+I8eXN6YhqAhpA==,MDUEDNcDobyOD48U1RN/9gQTq04m5TjtrG8ThlecD8Ltk4Ko+gQQSk131IEvVDJ5LotNwU9+bA==,MDUEDIN4ZN/s0vqOUSpZWwQTlYXHBXto7uFUpdZS+5n02fiHggQQeTBADOGYuEk0xmPnCD5aSg==,MDUEDJYvv7STaiADGbh4OQQTzjfVuCmndpX9FQX2JJg9UDZghAQQWnAhfD9iwOKYa4NrNzh+3w==,MDUEDCjkShVtfiauP8YAPwQTpXEqoVBwB5NalegKAJAopwcWlAQQBODjUn3AvTnS8WOE43ZZfw==,MDUEDOBXT56F2HtYaryjZQQTIIqMSll8Nn2g+/p5P6TGBFItFAQQ3qaBpqkFwCzVJNolS74cFQ==,MDUEDCWOP06TtJlnd4VjzgQTScliy/VcQ+oNcRIlV84YlRDP9wQQFFPkKAmr9/rANljUU37/jQ==,MDUEDKHkxndPpFlSW7RwxQQTtODvLhxqjZmciCgscDxz4HUw6AQQHTHwECUGS8bKi5aHMOZOUg==,MDUEDBSsYbPD8cdYFEkqrQQTYbXr+RiTr+0dCxxbEIHqbcCExwQQ+ccDQ5KnLMneCDvQHr8i6Q==',
+}
+
+response = requests.post('https://www.douyin.com/aweme/v1/web/module/feed/', params=params, headers=headers, data=data)
+
+print(response.text)
+print(response.status_code)
